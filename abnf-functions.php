@@ -489,7 +489,17 @@ abnf_regex($rules,			// I - Rules
 	  }
 	}
 
-        $regex .= preg_quote(chr($ch));
+        if ($ch < 32 || $ch == 127)
+        {
+          // Control codes
+          ($ch < 16)? $regex .= "\\x0":$regex .= "\\x";
+          $regex .= strtolower(dechex($ch));
+        }
+        else
+        {
+          // For visible characters, use it
+          $regex .= preg_quote(chr($ch));
+        }
 
         if ($i < $len && $token[$i] == '-')
           $regex .= "-";
